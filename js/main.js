@@ -1,11 +1,3 @@
-/**
-* Template Name: iPortfolio
-* Template URL: https://bootstrapmade.com/iportfolio-bootstrap-portfolio-websites-template/
-* Updated: Jun 14 2024 with Bootstrap v5.3.3
-* Author: BootstrapMade.com
-* License: https://bootstrapmade.com/license/
-*/
-
 (function() {
   "use strict";
 
@@ -22,6 +14,18 @@
   headerToggleBtn.addEventListener('click', headerToggle);
 
   /**
+   * Update header content
+   */
+  function updateHeaderContent() {
+    const headerName = document.querySelector('.header .logo h1');
+    const headerJobTitle = document.querySelector('.header .profile-img + p');
+
+    headerName.textContent = 'Venkata Akhil Mettu';
+    headerJobTitle.textContent = 'Data Analyst & Enterprise Solutions Analyst';
+  }
+  updateHeaderContent();
+
+  /**
    * Hide mobile nav on same-page/hash links
    */
   document.querySelectorAll('#navmenu a').forEach(navmenu => {
@@ -30,7 +34,6 @@
         headerToggle();
       }
     });
-
   });
 
   /**
@@ -67,8 +70,7 @@
   }
   scrollTop.addEventListener('click', (e) => {
     e.preventDefault();
-    window.scrollTo({
-      top: 0,
+    document.querySelector('#hero').scrollIntoView({
       behavior: 'smooth'
     });
   });
@@ -164,7 +166,6 @@
         }
       }, false);
     });
-
   });
 
   /**
@@ -226,4 +227,74 @@
   window.addEventListener('load', navmenuScrollspy);
   document.addEventListener('scroll', navmenuScrollspy);
 
+  /**
+   * Contact form validation
+   */
+  const contactForm = document.querySelector('.php-email-form');
+  const nameField = contactForm.querySelector('#name-field');
+  const emailField = contactForm.querySelector('#email-field');
+  const subjectField = contactForm.querySelector('#subject-field');
+  const messageField = contactForm.querySelector('#message-field');
+
+  contactForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    // Validate name field
+    if (nameField.value.trim() === '') {
+      showFormError('Please enter your name.');
+      return;
+    }
+
+    // Validate email field
+    if (!isValidEmail(emailField.value.trim())) {
+      showFormError('Please enter a valid email address.');
+      return;
+    }
+
+    // Validate subject field
+    if (subjectField.value.trim() === '') {
+      showFormError('Please enter a subject.');
+      return;
+    }
+
+    // Validate message field
+    if (messageField.value.trim() === '') {
+      showFormError('Please enter a message.');
+      return;
+    }
+
+    // If all fields are valid, submit the form
+    contactForm.submit();
+  });
+
+  function showFormError(errorMessage) {
+    const errorElement = contactForm.querySelector('.error-message');
+    errorElement.textContent = errorMessage;
+    errorElement.style.display = 'block';
+  }
+
+  function isValidEmail(email) {
+    // Simple email validation regex
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  }
+
+  /**
+   * Google Analytics event tracking
+   */
+  function trackGoogleAnalyticsEvent(category, action, label) {
+    if (typeof gtag === 'function') {
+      gtag('event', action, {
+        'event_category': category,
+        'event_label': label
+      });
+    }
+  }
+
+  // Example usage: Track a portfolio item click
+  document.querySelectorAll('.portfolio-info a').forEach(link => {
+    link.addEventListener('click', () => {
+      trackGoogleAnalyticsEvent('Portfolio', 'View Project', link.getAttribute('title'));
+    });
+  });
 })();
